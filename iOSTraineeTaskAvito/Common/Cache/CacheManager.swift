@@ -11,19 +11,20 @@ class CacheManager {
     
     static let shared = CacheManager()
     
-    private let cachedObjectKey: NSString = "CachedObject"
-    
-    private let cache = NSCache<NSString, CompanyItem>()
-    
     func cachedData() -> CompanyItem? {
 
-        let cachedData = cache.object(forKey: cachedObjectKey)
-        
-        return cachedData
-        
+        guard
+            let data = UserDefaults.standard.object(forKey: UserDefaultsKeys.cachedObjectKey.rawValue) as? Data,
+            let companyItem = try? JSONDecoder().decode(CompanyItem.self, from: data)
+        else {
+            return nil
+        }
+        return companyItem
     }
     
     func cache(data: CompanyItem) {
-        cache.setObject(data, forKey: cachedObjectKey)
+        if let encoded = try? JSONEncoder().encode(data) {
+            UserDefaults.standard.set(encoded, forKey: UserDefaultsKeys.cachedObjectKey.rawValue)
+        }
     }
 }
