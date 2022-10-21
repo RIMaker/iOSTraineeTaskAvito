@@ -7,6 +7,6 @@
 
 import Foundation
 
-class CompanyItem: Decodable {
+struct CompanyItem: Codable {
     var company: Company
 }

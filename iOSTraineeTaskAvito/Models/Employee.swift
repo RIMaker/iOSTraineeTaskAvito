@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Employee: Decodable {
+struct Employee: Codable {
     var name: String
     var phoneNumber: String
     var skills: [String]

@@ -12,12 +12,8 @@ class NetworkManager {
     
     static let shared = NetworkManager()
     
-    private let lastUpdatingDateKey = "lastUpdatingDate"
-    
-    private let requestUrl = "https://run.mocky.io/v3/1d1cb4ec-73db-4762-8c4b-0b8aa3cecd4c"
-    
     func shouldUpdateData() -> Bool {
-        let lastUpdatingDate = UserDefaults.standard.value(forKey: lastUpdatingDateKey) as? Date
+        let lastUpdatingDate = UserDefaults.standard.object(forKey: UserDefaultsKeys.lastUpdatingDateKey.rawValue) as? Date
         let cachedData = CacheManager.shared.cachedData()
         let nowDate = Date()
         if let lastUpdatingDate = lastUpdatingDate, let _ = cachedData {
@@ -29,11 +25,11 @@ class NetworkManager {
         return true
     }
     
-    func fetchData(complition: @escaping (CompanyItem?)->()) {
+    func fetchData(forURL requestUrl: String, complition: @escaping (CompanyItem?)->()) {
         guard let url = URL(string: requestUrl) else { return }
         let session = URLSession.shared
-        var request = URLRequest(url: url, timeoutInterval: 10)
-        request.setValue("application/json; charset=UTF-8", forHTTPHeaderField: "Content-Type")
+        var request = URLRequest(url: url)
+        request.setValue(APIProvider.shared.contentType, forHTTPHeaderField: "Content-Type")
         session.dataTask(with: request) { (data, response, error) in
             guard
                 let data = data,
@@ -49,7 +45,7 @@ class NetworkManager {
             let companyItem = try? decoder.decode(CompanyItem.self, from: data)
             if let companyItem = companyItem {
                 CacheManager.shared.cache(data: companyItem)
-                UserDefaults.standard.setValue(Date(), forKey: self.lastUpdatingDateKey)
+                UserDefaults.standard.set(Date(), forKey: UserDefaultsKeys.lastUpdatingDateKey.rawValue)
             }
             complition(companyItem)
         }.resume()

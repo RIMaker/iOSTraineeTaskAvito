@@ -11,6 +11,19 @@ class EmployeesTableViewController: UITableViewController {
     
     private let cellId = "cell"
     
+    private var rightBarButtonItemImage: SystemImageNames = .wifi {
+        didSet {
+            DispatchQueue.main.async {
+                let rightBarButtonItem = UIBarButtonItem(
+                    image: UIImage(systemName: self.rightBarButtonItemImage.rawValue),
+                    style: .plain,
+                    target: EmployeesTableViewController.self,
+                    action: nil)
+                self.navigationItem.rightBarButtonItem = rightBarButtonItem
+            }
+        }
+    }
+    
     private var companyItem: CompanyItem? {
         didSet {
             if let newCompanyItem = companyItem {
@@ -38,7 +51,6 @@ class EmployeesTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(loadingDataIndicator)
-        view.addSubview(internetConnectionIndicator)
         
         navigationController?.navigationBar.prefersLargeTitles = true
         
@@ -46,13 +58,9 @@ class EmployeesTableViewController: UITableViewController {
         loadingDataIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         loadingDataIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -(navigationController?.navigationBar.frame.height ?? 0)).isActive = true
         
-        internetConnectionIndicator.translatesAutoresizingMaskIntoConstraints = false
-        internetConnectionIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        internetConnectionIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -(navigationController?.navigationBar.frame.height ?? 0)).isActive = true
-        
         let refreshControl = UIRefreshControl()
         refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
-        refreshControl.addTarget(self, action: #selector(self.updateData), for: .valueChanged)
+        refreshControl.addTarget(self, action: #selector(self.fetchData), for: .valueChanged)
         
         tableView.refreshControl = refreshControl
         tableView.register(EmployeeCell.self, forCellReuseIdentifier: cellId)
@@ -87,14 +95,14 @@ class EmployeesTableViewController: UITableViewController {
     
 }
 
-
+// MARK: - Data processing
 extension EmployeesTableViewController {
     
-    private func fetchData() {
+    @objc private func fetchData() {
         loadingDataIndicator.isHidden = false
         loadingDataIndicator.startAnimating()
         refreshControl?.endRefreshing()
-        NetworkManager.shared.fetchData { companyItem in
+        NetworkManager.shared.fetchData(forURL: APIProvider.shared.apiUrl) { companyItem in
             self.companyItem = companyItem
             DispatchQueue.main.async {
                 self.loadingDataIndicator.stopAnimating()
@@ -104,14 +112,11 @@ extension EmployeesTableViewController {
         }
     }
     
-    @objc private func updateData() {
+    private func updateData() {
         if NetworkManager.shared.shouldUpdateData() {
-            print("\nfetchData\n")
             fetchData()
         } else {
-            print("\nupdateData\n")
             refreshControl?.endRefreshing()
-            internetConnectionIndicator.stopAnimating()
             companyItem = CacheManager.shared.cachedData()
             tableView.reloadData()
             navigationItem.title = companyItem?.company.name
@@ -123,15 +128,14 @@ extension EmployeesTableViewController {
             DispatchQueue.main.async {
                 switch status {
                 case .satisfied:
-                    self.internetConnectionIndicator.stopAnimating()
+                    self.rightBarButtonItemImage = .wifi
                     self.updateData()
                 case .unsatisfied:
+                    self.rightBarButtonItemImage = .wifiSlash
                     self.showAlert()
-                    self.internetConnectionIndicator.isHidden = false
-                    self.internetConnectionIndicator.startAnimating()
+                    self.updateData()
                 case .requiresConnection:
-                    self.internetConnectionIndicator.isHidden = false
-                    self.internetConnectionIndicator.startAnimating()
+                    self.rightBarButtonItemImage = .wifiExclamationMark
                 default: break
                 }
             }
