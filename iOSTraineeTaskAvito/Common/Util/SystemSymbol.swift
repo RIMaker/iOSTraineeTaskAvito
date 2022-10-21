@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum SystemImageNames: String {
+enum SystemSymbol: String {
     case wifi = "wifi"
     case wifiSlash = "wifi.slash"
     case wifiExclamationMark = "wifi.exclamationmark"

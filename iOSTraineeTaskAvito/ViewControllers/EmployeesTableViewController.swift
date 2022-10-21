@@ -11,15 +11,15 @@ class EmployeesTableViewController: UITableViewController {
     
     private let cellId = "cell"
     
-    private var rightBarButtonItemImage: SystemImageNames = .wifi {
+    private var rightBarButtonItem: SystemSymbol = .wifi {
         didSet {
             DispatchQueue.main.async {
-                let rightBarButtonItem = UIBarButtonItem(
-                    image: UIImage(systemName: self.rightBarButtonItemImage.rawValue),
+                let rightBarButton = UIBarButtonItem(
+                    image: UIImage(systemName: self.rightBarButtonItem.rawValue),
                     style: .plain,
                     target: EmployeesTableViewController.self,
                     action: nil)
-                self.navigationItem.rightBarButtonItem = rightBarButtonItem
+                self.navigationItem.rightBarButtonItem = rightBarButton
             }
         }
     }
@@ -35,13 +35,6 @@ class EmployeesTableViewController: UITableViewController {
     }
     
     private let loadingDataIndicator: UIActivityIndicatorView = {
-        let actInd = UIActivityIndicatorView()
-        actInd.isHidden = true
-        actInd.hidesWhenStopped = true
-        return actInd
-    }()
-    
-    private let internetConnectionIndicator: UIActivityIndicatorView = {
         let actInd = UIActivityIndicatorView()
         actInd.isHidden = true
         actInd.hidesWhenStopped = true
@@ -128,14 +121,14 @@ extension EmployeesTableViewController {
             DispatchQueue.main.async {
                 switch status {
                 case .satisfied:
-                    self.rightBarButtonItemImage = .wifi
+                    self.rightBarButtonItem = .wifi
                     self.updateData()
                 case .unsatisfied:
-                    self.rightBarButtonItemImage = .wifiSlash
+                    self.rightBarButtonItem = .wifiSlash
                     self.showAlert()
                     self.updateData()
                 case .requiresConnection:
-                    self.rightBarButtonItemImage = .wifiExclamationMark
+                    self.rightBarButtonItem = .wifiExclamationMark
                 default: break
                 }
             }
