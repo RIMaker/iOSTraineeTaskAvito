@@ -17,9 +17,10 @@
 # Демонстрация работы приложения
 
 * Включена темная тема на устройстве:
+ 
+https://user-images.githubusercontent.com/35456855/197338898-cc056768-6321-4008-ad12-2650e9fb98e9.mp4
 
-![dark](https://user-images.githubusercontent.com/35456855/197338898-cc056768-6321-4008-ad12-2650e9fb98e9.mp4)
 
 * Включена светлая тема на устройстве:
 
-![light](https://user-images.githubusercontent.com/35456855/197338906-b864ed85-6ece-44d6-a823-7646b90abf8b.mp4)
+https://user-images.githubusercontent.com/35456855/197338906-b864ed85-6ece-44d6-a823-7646b90abf8b.mp4
