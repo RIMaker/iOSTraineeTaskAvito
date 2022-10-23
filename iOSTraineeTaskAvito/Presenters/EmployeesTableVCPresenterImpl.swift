@@ -46,7 +46,7 @@ class EmployeesTableVCPresenterImpl: EmployeesTableVCPresenter {
     }
     
     // MARK: - Data processing
-    @objc func fetchData() {
+    @objc private func fetchData() {
         delegate?.loadingDataIndicator.isHidden = false
         delegate?.loadingDataIndicator.startAnimating()
         delegate?.refreshControl?.endRefreshing()
