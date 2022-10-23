@@ -9,9 +9,19 @@ import UIKit
 
 class EmployeesTableViewController: UITableViewController {
     
-    private let cellId = "cell"
+    private var presenter: EmployeesTableVCPresenter = EmployeesTableVCPresenterImpl()
     
-    private var rightBarButtonItem: SystemSymbol = .wifi {
+    var companyItem: CompanyItem? {
+        didSet {
+            if let newCompanyItem = companyItem {
+                companyItem?.company.employees = newCompanyItem.company.employees.sorted {
+                    $0.name < $1.name
+                }
+            }
+        }
+    }
+    
+    var rightBarButtonItem: SystemSymbol = .wifi {
         didSet {
             DispatchQueue.main.async {
                 let rightBarButton = UIBarButtonItem(
@@ -24,17 +34,7 @@ class EmployeesTableViewController: UITableViewController {
         }
     }
     
-    private var companyItem: CompanyItem? {
-        didSet {
-            if let newCompanyItem = companyItem {
-                companyItem?.company.employees = newCompanyItem.company.employees.sorted {
-                    $0.name < $1.name
-                }
-            }
-        }
-    }
-    
-    private let loadingDataIndicator: UIActivityIndicatorView = {
+    let loadingDataIndicator: UIActivityIndicatorView = {
         let actInd = UIActivityIndicatorView()
         actInd.isHidden = true
         actInd.hidesWhenStopped = true
@@ -43,33 +43,10 @@ class EmployeesTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(loadingDataIndicator)
         
-        navigationController?.navigationBar.prefersLargeTitles = true
-        
-        loadingDataIndicator.translatesAutoresizingMaskIntoConstraints = false
-        loadingDataIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        loadingDataIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -(navigationController?.navigationBar.frame.height ?? 0)).isActive = true
-        
-        let refreshControl = UIRefreshControl()
-        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
-        refreshControl.addTarget(self, action: #selector(self.fetchData), for: .valueChanged)
-        
-        tableView.refreshControl = refreshControl
-        tableView.register(EmployeeCell.self, forCellReuseIdentifier: cellId)
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 120
-        tableView.backgroundColor = .secondarySystemBackground
-        
-        createNetworkConnectionMonitor()
+        presenter.delegate = self
+        presenter.viewShown()
        
-    }
-    
-    private func showAlert() {
-        let alertController = UIAlertController(title: "Connection failure", message: nil, preferredStyle: .alert)
-        let alertAction = UIAlertAction(title: "OK", style: .cancel)
-        alertController.addAction(alertAction)
-        navigationController?.present(alertController, animated: true, completion: nil)
     }
 
     // MARK: - Table view data source
@@ -78,7 +55,7 @@ class EmployeesTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! EmployeeCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: EmployeeCell.cellId, for: indexPath) as! EmployeeCell
        
         cell.employee = companyItem?.company.employees[indexPath.row]
         cell.backgroundColor = .secondarySystemBackground
@@ -86,52 +63,4 @@ class EmployeesTableViewController: UITableViewController {
         return cell
     }
     
-}
-
-// MARK: - Data processing
-extension EmployeesTableViewController {
-    
-    @objc private func fetchData() {
-        loadingDataIndicator.isHidden = false
-        loadingDataIndicator.startAnimating()
-        refreshControl?.endRefreshing()
-        NetworkManager.shared.fetchData(forURL: APIProvider.shared.apiUrl) { companyItem in
-            self.companyItem = companyItem
-            DispatchQueue.main.async {
-                self.loadingDataIndicator.stopAnimating()
-                self.tableView.reloadData()
-                self.navigationItem.title = self.companyItem?.company.name
-            }
-        }
-    }
-    
-    private func updateData() {
-        if NetworkManager.shared.shouldUpdateData() {
-            fetchData()
-        } else {
-            refreshControl?.endRefreshing()
-            companyItem = CacheManager.shared.cachedData()
-            tableView.reloadData()
-            navigationItem.title = companyItem?.company.name
-        }
-    }
-    
-    private func createNetworkConnectionMonitor() {
-        NetworkManager.shared.createNetworkConnectionMonitor { status in
-            DispatchQueue.main.async {
-                switch status {
-                case .satisfied:
-                    self.rightBarButtonItem = .wifi
-                    self.updateData()
-                case .unsatisfied:
-                    self.rightBarButtonItem = .wifiSlash
-                    self.showAlert()
-                    self.updateData()
-                case .requiresConnection:
-                    self.rightBarButtonItem = .wifiExclamationMark
-                default: break
-                }
-            }
-        }
-    }
 }

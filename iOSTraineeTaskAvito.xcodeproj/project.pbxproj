@@ -21,6 +21,8 @@
 		7CA8F03F28FEC4830023CC66 /* EmployeeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CA8F03E28FEC4830023CC66 /* EmployeeCell.swift */; };
 		7CA8F04128FEC5E90023CC66 /* Company.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CA8F04028FEC5E90023CC66 /* Company.swift */; };
 		7CA8F04328FEC64A0023CC66 /* Employee.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CA8F04228FEC64A0023CC66 /* Employee.swift */; };
+		7CBE9FBB29052BD000134059 /* EmployeesTableVCPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CBE9FBA29052BD000134059 /* EmployeesTableVCPresenter.swift */; };
+		7CBE9FBE29052CE400134059 /* EmployeesTableVCPresenterImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CBE9FBD29052CE400134059 /* EmployeesTableVCPresenterImpl.swift */; };
 		7CEB6E8028FEE8DF00BD0214 /* CompanyItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CEB6E7F28FEE8DF00BD0214 /* CompanyItem.swift */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +43,8 @@
 		7CA8F03E28FEC4830023CC66 /* EmployeeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeeCell.swift; sourceTree = "<group>"; };
 		7CA8F04028FEC5E90023CC66 /* Company.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Company.swift; sourceTree = "<group>"; };
 		7CA8F04228FEC64A0023CC66 /* Employee.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Employee.swift; sourceTree = "<group>"; };
+		7CBE9FBA29052BD000134059 /* EmployeesTableVCPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeesTableVCPresenter.swift; sourceTree = "<group>"; };
+		7CBE9FBD29052CE400134059 /* EmployeesTableVCPresenterImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeesTableVCPresenterImpl.swift; sourceTree = "<group>"; };
 		7CEB6E7F28FEE8DF00BD0214 /* CompanyItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyItem.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -144,6 +148,7 @@
 				7C61675429002FC400566864 /* Configuration */,
 				7CA8F04528FEC77E0023CC66 /* Common */,
 				7CA8F04428FEC6FC0023CC66 /* Models */,
+				7CBE9FBC29052CBE00134059 /* Presenters */,
 				7C61675329002F5F00566864 /* ViewControllers */,
 				7C6167622903040E00566864 /* CustomViews */,
 				7C61675529002FDA00566864 /* Resourses */,
@@ -167,6 +172,7 @@
 				7C61676529031D9900566864 /* Util */,
 				7C6167562901B33A00566864 /* Cache */,
 				7C61674F29001DCA00566864 /* Network */,
+				7CBE9FB929052B9800134059 /* Protocols */,
 				7C61672C28FF1A6C00566864 /* Extensions */,
 				7CA8F04628FEC7890023CC66 /* Application */,
 			);
@@ -180,6 +186,22 @@
 				7C86759028FEBFB4008A9486 /* SceneDelegate.swift */,
 			);
 			path = Application;
+			sourceTree = "<group>";
+		};
+		7CBE9FB929052B9800134059 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				7CBE9FBA29052BD000134059 /* EmployeesTableVCPresenter.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		7CBE9FBC29052CBE00134059 /* Presenters */ = {
+			isa = PBXGroup;
+			children = (
+				7CBE9FBD29052CE400134059 /* EmployeesTableVCPresenterImpl.swift */,
+			);
+			path = Presenters;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -257,6 +279,8 @@
 				7CA8F04328FEC64A0023CC66 /* Employee.swift in Sources */,
 				7CA8F03F28FEC4830023CC66 /* EmployeeCell.swift in Sources */,
 				7C616769290327EC00566864 /* SystemSymbol.swift in Sources */,
+				7CBE9FBE29052CE400134059 /* EmployeesTableVCPresenterImpl.swift in Sources */,
+				7CBE9FBB29052BD000134059 /* EmployeesTableVCPresenter.swift in Sources */,
 				7C61676729031DB900566864 /* UserDefaultsKeys.swift in Sources */,
 				7C86758F28FEBFB4008A9486 /* AppDelegate.swift in Sources */,
 				7CA8F04128FEC5E90023CC66 /* Company.swift in Sources */,
