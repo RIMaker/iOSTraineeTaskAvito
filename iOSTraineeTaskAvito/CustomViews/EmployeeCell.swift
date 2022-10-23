@@ -9,6 +9,8 @@ import UIKit
 
 class EmployeeCell: UITableViewCell {
     
+    static let cellId = "cell"
+    
     var employee : Employee? {
         didSet {
             nameLabel.text = employee?.name
