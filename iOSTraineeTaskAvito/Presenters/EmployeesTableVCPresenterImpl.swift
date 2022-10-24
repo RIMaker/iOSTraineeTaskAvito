@@ -16,9 +16,8 @@ class EmployeesTableVCPresenterImpl: EmployeesTableVCPresenter {
         createNetworkConnectionMonitor()
     }
     
-    
-    private func showAlert() {
-        let alertController = UIAlertController(title: "Connection failure", message: nil, preferredStyle: .alert)
+    private func showAlert(withTitle title: String, withMessage message: String?) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let alertAction = UIAlertAction(title: "OK", style: .cancel)
         alertController.addAction(alertAction)
         delegate?.navigationController?.present(alertController, animated: true, completion: nil)
@@ -31,8 +30,13 @@ class EmployeesTableVCPresenterImpl: EmployeesTableVCPresenter {
         delegate.navigationController?.navigationBar.prefersLargeTitles = true
         
         delegate.loadingDataIndicator.translatesAutoresizingMaskIntoConstraints = false
-        delegate.loadingDataIndicator.centerXAnchor.constraint(equalTo: delegate.view.centerXAnchor).isActive = true
-        delegate.loadingDataIndicator.centerYAnchor.constraint(equalTo: delegate.view.centerYAnchor, constant: -(delegate.navigationController?.navigationBar.frame.height ?? 0)).isActive = true
+        delegate.loadingDataIndicator.centerXAnchor.constraint(
+            equalTo: delegate.view.centerXAnchor
+        ).isActive = true
+        delegate.loadingDataIndicator.centerYAnchor.constraint(
+            equalTo: delegate.view.centerYAnchor,
+            constant: -(delegate.navigationController?.navigationBar.frame.height ?? 0)
+        ).isActive = true
         
         let refreshControl = UIRefreshControl()
         refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
@@ -72,18 +76,18 @@ class EmployeesTableVCPresenterImpl: EmployeesTableVCPresenter {
     }
     
     private func createNetworkConnectionMonitor() {
-        NetworkManager.shared.createNetworkConnectionMonitor { status in
+        NetworkManager.shared.createNetworkConnectionMonitor { [weak self] status in
             DispatchQueue.main.async {
                 switch status {
                 case .satisfied:
-                    self.delegate?.rightBarButtonItem = .wifi
-                    self.updateData()
+                    self?.delegate?.rightBarButtonItem = .wifi
+                    self?.updateData()
                 case .unsatisfied:
-                    self.delegate?.rightBarButtonItem = .wifiSlash
-                    self.showAlert()
-                    self.updateData()
+                    self?.delegate?.rightBarButtonItem = .wifiSlash
+                    self?.showAlert(withTitle: "Connection failure", withMessage: nil)
+                    self?.updateData()
                 case .requiresConnection:
-                    self.delegate?.rightBarButtonItem = .wifiExclamationMark
+                    self?.delegate?.rightBarButtonItem = .wifiExclamationMark
                 default: break
                 }
             }

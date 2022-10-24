@@ -25,7 +25,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.makeKeyAndVisible()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            let navController = UINavigationController(rootViewController: EmployeesTableViewController())
+            let employeesVC = EmployeesTableViewController()
+            let employeesVCPresenter = EmployeesTableVCPresenterImpl()
+            employeesVC.presenter = employeesVCPresenter
+            let navController = UINavigationController(rootViewController: employeesVC)
             self.window?.rootViewController = navController
         }
     }

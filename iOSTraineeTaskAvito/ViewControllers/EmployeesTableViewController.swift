@@ -9,7 +9,7 @@ import UIKit
 
 class EmployeesTableViewController: UITableViewController {
     
-    private var presenter: EmployeesTableVCPresenter = EmployeesTableVCPresenterImpl()
+    var presenter: EmployeesTableVCPresenter?
     
     var companyItem: CompanyItem? {
         didSet {
@@ -44,8 +44,8 @@ class EmployeesTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        presenter.delegate = self
-        presenter.viewShown()
+        presenter?.delegate = self
+        presenter?.viewShown()
        
     }
 
