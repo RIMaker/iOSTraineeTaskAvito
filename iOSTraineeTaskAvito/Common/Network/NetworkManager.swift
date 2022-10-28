@@ -12,6 +12,8 @@ class NetworkManager {
     
     static let shared = NetworkManager()
     
+    private var lastStatus: NWPath.Status?
+    
     func shouldUpdateData() -> Bool {
         let lastUpdatingDate = UserDefaults.standard.object(forKey: UserDefaultsKeys.lastUpdatingDateKey.rawValue) as? Date
         let cachedData = CacheManager.shared.cachedData()
@@ -53,8 +55,11 @@ class NetworkManager {
     
     func createNetworkConnectionMonitor(complition: @escaping (NWPath.Status)->()) {
         let monitor = NWPathMonitor()
-        monitor.pathUpdateHandler = { path in
-            complition(path.status)
+        monitor.pathUpdateHandler = { [weak self] path in
+            if self?.lastStatus != path.status {
+                self?.lastStatus = path.status
+                complition(path.status)
+            }
         }
         let queue = DispatchQueue(label: "Monitor")
         monitor.start(queue: queue)
