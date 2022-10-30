@@ -10,6 +10,8 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    
+    lazy var viewFactory: ViewFactory = ViewFactoryImpl()
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -18,18 +20,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        
-        let storyboard = UIStoryboard(name: "LaunchScreen", bundle: .main)
-        
-        window?.rootViewController = storyboard.instantiateInitialViewController()
+        window?.rootViewController = viewFactory.makeView(for: .launchScreen)
         window?.makeKeyAndVisible()
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            let employeesVC = EmployeesTableViewController()
-            let employeesVCPresenter = EmployeesTableVCPresenterImpl()
-            employeesVC.presenter = employeesVCPresenter
-            let navController = UINavigationController(rootViewController: employeesVC)
-            self.window?.rootViewController = navController
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+            self?.window?.rootViewController = self?.viewFactory.makeView(for: .mainScreen)
         }
     }
 
