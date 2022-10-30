@@ -7,9 +7,12 @@
 
 import Foundation
 
-class CacheManager {
-    
-    static let shared = CacheManager()
+protocol CacheManager {
+    func cachedData() -> CompanyItem?
+    func cache(data: CompanyItem?)
+}
+
+class CacheManagerImpl: CacheManager {
     
     func cachedData() -> CompanyItem? {
 
@@ -22,9 +25,10 @@ class CacheManager {
         return companyItem
     }
     
-    func cache(data: CompanyItem) {
-        if let encoded = try? JSONEncoder().encode(data) {
+    func cache(data: CompanyItem?) {
+        if let data = data, let encoded = try? JSONEncoder().encode(data) {
             UserDefaults.standard.set(encoded, forKey: UserDefaultsKeys.cachedObjectKey.rawValue)
+            UserDefaults.standard.set(Date(), forKey: UserDefaultsKeys.lastUpdatingDateKey.rawValue)
         }
     }
 }
